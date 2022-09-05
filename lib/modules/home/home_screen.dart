@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:simple_qr/modules/constants/constants.dart';
 import 'package:simple_qr/modules/qr_generate/qr_generate_screen.dart';
 import 'package:simple_qr/modules/qr_scanner/scanner_screen.dart';
 
@@ -14,29 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final qrKey = GlobalKey(debugLabel: 'QR');
-  PageController _myPage = PageController(initialPage: 0);
-
-  QRViewController? controller;
-  Barcode? barCode;
   List<Widget> screens = [ScannerScreen(), QrGenerateScreen()];
   var index = 0;
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Future<void> reassemble() async {
-    super.reassemble();
-
-    if (Platform.isAndroid) {
-      await controller!.pauseCamera();
-    }
-    controller!.resumeCamera();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () {
                           setState(() {
                             index = 0;
+                            MyConstants.controller?.resumeCamera();
                           });
                         },
                       ),
@@ -75,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             index = 1;
                           });
+                          MyConstants.controller?.pauseCamera();
                         },
                       ),
                       Text('Generator')
@@ -88,37 +70,5 @@ class _HomeScreenState extends State<HomeScreen> {
           // backgroundColor: Colors.green,
           body: screens[index]),
     );
-  }
-
-  Widget buildResult() {
-    return Text(
-      barCode != null ? 'Result : ${barCode!.code}' : 'Scan a code!',
-      maxLines: 3,
-      style: TextStyle(
-          color: Colors.white, backgroundColor: Colors.black, fontSize: 20.0),
-    );
-  }
-
-  Widget buildQrView(BuildContext context) {
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-          borderRadius: 10.0,
-          borderLength: 20.0,
-          borderWidth: 10.0,
-          cutOutSize: MediaQuery.of(context).size.width * 0.8),
-    );
-  }
-
-  void onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-    controller.scannedDataStream.listen((barCode) {
-      setState(() {
-        this.barCode = barCode;
-      });
-    });
   }
 }

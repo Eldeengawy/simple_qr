@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:simple_qr/modules/constants/constants.dart';
 
 class ScannerScreen extends StatefulWidget {
   ScannerScreen({super.key});
@@ -15,12 +16,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   PageController _myPage = PageController(initialPage: 0);
 
-  QRViewController? controller;
+  // QRViewController? controller;
   Barcode? barCode;
 
   @override
   void dispose() {
-    controller?.dispose();
+    MyConstants.controller?.dispose();
     super.dispose();
   }
 
@@ -29,9 +30,9 @@ class _ScannerScreenState extends State<ScannerScreen> {
     super.reassemble();
 
     if (Platform.isAndroid) {
-      await controller!.pauseCamera();
+      await MyConstants.controller!.pauseCamera();
     }
-    controller!.resumeCamera();
+    MyConstants.controller!.resumeCamera();
   }
 
   @override
@@ -74,7 +75,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   void onQRViewCreated(QRViewController controller) {
     setState(() {
-      this.controller = controller;
+      MyConstants.controller = controller;
     });
     controller.scannedDataStream.listen((barCode) {
       setState(() {
