@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:simple_qr/modules/home/home_screen.dart';
+import 'package:simple_qr/modules/home/test.dart';
 import 'package:simple_qr/modules/qr_generate/qr_generate_screen.dart';
 
 void main() {
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: QrGenerateScreen(),
+      home: HomeScreen(),
     );
   }
 }
